@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>Seesaw Controller ⚙️</title>
+    <link rel="icon" type="image/png" href="../assets/seesaw.png">
+    <link rel="stylesheet" href="serial_controller/style.css">
+</head>
+<body>
+
+<div class="top-bar">
+    <button id="darkModeToggle">🌙</button>
+</div>
+
+<div class="container">
+    <h1>Seesaw Controller ⚙️</h1>
+    
+    <div class="control-group">
+        <button id="refreshPortsButton">Request/Refresh Ports</button>
+        <select id="portSelector" disabled></select>
+        <select id="baudRate">
+            <option value="9600">9600</option>
+            <option value="19200">19200</option>
+            <option value="38400">38400</option>
+            <option value="57600">57600</option>
+            <option value="115200" selected>115200</option>
+        </select>
+        <button id="connectButton" disabled>Connect</button>
+    </div>
+
+    <hr>
+    
+    <div class="control-group">
+        <div>
+            <div class="input-group"><label for="kp">Kp:</label><input type="text" id="kp" value="0.1"></div>
+            <div class="input-group"><label for="ki">Ki:</label><input type="text" id="ki" value="0.01"></div>
+            <div class="input-group"><label for="kd">Kd:</label><input type="text" id="kd" value="0.05"></div>
+        </div>
+        <div>
+            <div class="input-group"><label for="tau">Tau:</label><input type="text" id="tau" value="0.02"></div>
+            <div class="input-group"><label for="setpoint">Setpoint:</label><input type="text" id="setpoint" value="0.0"></div>
+        </div>
+    </div>
+    
+    <hr>
+
+    <div class="control-group">
+        <button class="motor-button" id="leftMotorButton">Start Left Motor</button>
+        <button class="motor-button" id="rightMotorButton">Start Right Motor</button>
+    </div>
+
+    <div class="control-group">
+        <label for="rgbColorPicker">RGB LED Color:</label>
+        <input type="color" id="rgbColorPicker" value="#ff0000">
+    </div>
+    
+    <div class="led-group">
+        <!-- 4 Red LEDs -->
+        <span class="led-indicator red" data-led-index="0"></span>
+        <span class="led-indicator red" data-led-index="1"></span>
+        <span class="led-indicator red" data-led-index="2"></span>
+        <span class="led-indicator red" data-led-index="3"></span>
+        <!-- 4 Green LEDs -->
+        <span class="led-indicator green" data-led-index="4"></span>
+        <span class="led-indicator green" data-led-index="5"></span>
+        <span class="led-indicator green" data-led-index="6"></span>
+        <span class="led-indicator green" data-led-index="7"></span>
+    </div>
+
+    <hr>
+
+    <div class="control-group">
+        <button id="sendButton">Send All Data</button>
+    </div>
+
+    <div id="log">
+        <span id="status-indicator" class="disconnected"></span>
+        <span id="status-text">Status: Disconnected. Request port access to begin.</span>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Live Data</h2>
+    <div id="gauges-container">
+        <!-- Gauges will be inserted here by JavaScript -->
+    </div>
+</div>
+
+<script src="serial_controller/script.js" defer></script>
+</body>
+</html>

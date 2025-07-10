@@ -1,0 +1,200 @@
+:root {
+    --bg-color: #10d3d3;
+    --container-bg: rgba(255, 255, 255, 0.95);
+    --text-color: #333;
+    --text-color-light: #555;
+    --border-color: #ccc;
+    --hr-color: #ddd;
+    --gauge-dial-fill: #e0e0e0;
+    --gauge-dial-stroke: #c0c0c0;
+    --color-success: #28a745;
+    --color-danger: #dc3545;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-color-light: #aaa;
+    --border-color: #444;
+    --hr-color: #333;
+    --gauge-dial-fill: #444;
+    --gauge-dial-stroke: #555;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.top-bar {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -10px; /* Pull button closer to container */
+    padding-right: 1rem;
+    position: relative; /* Added for z-index context */
+    z-index: 10; /* Ensures the button is on top */
+}
+
+#darkModeToggle {
+    background: none;
+    border: 1px var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.container {
+    background: var(--container-bg);
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+}
+.control-group, .led-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.input-group label {
+    display: inline-block;
+    width: 130px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: 500;
+}
+input[type="text"], select, button {
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+}
+input[type="color"] {
+    padding: 0.2rem;
+    height: 40px;
+    width: 50px;
+}
+input[type="text"]:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+button {
+    cursor: pointer;
+    border: none;
+    color: white;
+    min-width: 120px;
+    font-weight: 500;
+}
+#refreshPortsButton { background-color: #17a2b8; }
+#connectButton { background-color: #007bff; }
+#connectButton.disconnect { background-color: var(--color-danger); }
+#sendButton { background-color: var(--color-success); font-size: 1.1rem; padding: 0.8rem 1.2rem;}
+.motor-button { background-color: var(--color-success); }
+.motor-button.on { background-color: var(--color-danger); }
+
+#log {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    min-height: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+#status-indicator.disconnected { background-color: var(--color-danger); }
+#status-indicator.connected { background-color: var(--color-success); }
+hr {
+    border: none;
+    border-top: 1px solid var(--hr-color);
+    margin: 1.5rem 0;
+}
+/* Gauge Styles */
+#gauges-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+.gauge {
+    width: 220px;
+    text-align: center;
+}
+.gauge-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.gauge .gauge-body {
+    width: 100%;
+    height: 110px;
+    position: relative;
+}
+.gauge .gauge-dial {
+    fill: var(--gauge-dial-fill);
+    stroke: var(--gauge-dial-stroke);
+    stroke-width: 2;
+}
+.gauge .gauge-needle {
+    fill: var(--color-danger);
+    stroke: #c02839;
+    stroke-width: 1;
+    transform-origin: 50px 70px;
+    transition: transform 0.2s ease-out;
+}
+.gauge-value-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+/* LED Indicator Styles */
+.led-indicator {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #888;
+}
+.led-indicator.red { background-color: #58151c; }
+.led-indicator.red.on { background-color: var(--color-danger); box-shadow: 0 0 10px var(--color-danger); }
+.led-indicator.green { background-color: #12421f; }
+.led-indicator.green.on { background-color: var(--color-success); box-shadow: 0 0 10px var(--color-success); }
