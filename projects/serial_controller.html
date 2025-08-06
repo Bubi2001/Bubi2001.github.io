@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
     <title>Seesaw Controller ⚙️</title>
-    <link rel="icon" type="image/png" href="../assets/seesaw.png">
     <link rel="stylesheet" href="serial_controller/style.css">
 </head>
 <body>
@@ -34,13 +33,21 @@
     
     <div class="control-group">
         <div>
-            <div class="input-group"><label for="kp">Kp:</label><input type="text" id="kp" value="0.1"></div>
-            <div class="input-group"><label for="ki">Ki:</label><input type="text" id="ki" value="0.01"></div>
-            <div class="input-group"><label for="kd">Kd:</label><input type="text" id="kd" value="0.05"></div>
+            <div class="input-group"><label for="kp">Kp:</label><input type="text" id="kp" value="0.0075"></div>
+            <div class="input-group"><label for="ki">Ki:</label><input type="text" id="ki" value="0.0101"></div>
+            <div class="input-group"><label for="kd">Kd:</label><input type="text" id="kd" value="0.0014"></div>
         </div>
         <div>
-            <div class="input-group"><label for="tau">Tau:</label><input type="text" id="tau" value="0.02"></div>
+            <div class="input-group"><label for="tau">Tau:</label><input type="text" id="tau" value="0.008"></div>
             <div class="input-group"><label for="setpoint">Setpoint:</label><input type="text" id="setpoint" value="0.0"></div>
+        </div>
+        <!-- Add this inside a .control-group in your HTML -->
+        <div class="mode-switch">
+            <label for="controlModeToggle">Use Phone as Setpoint:</label>
+            <label class="switch">
+                <input type="checkbox" id="controlModeToggle">
+                <span class="slider round"></span>
+            </label>
         </div>
     </div>
     

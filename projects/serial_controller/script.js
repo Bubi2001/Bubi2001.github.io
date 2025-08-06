@@ -15,6 +15,7 @@ const rightMotorButton = document.getElementById('rightMotorButton');
 const rgbColorPicker = document.getElementById('rgbColorPicker');
 const ledIndicators = document.querySelectorAll('.led-indicator');
 const darkModeToggle = document.getElementById('darkModeToggle');
+const controlModeToggle = document.getElementById('controlModeToggle');
 
 // --- State Variables ---
 let port;
@@ -24,6 +25,33 @@ let availablePorts = [];
 let leftMotorOn = false;
 let rightMotorOn = false;
 let ledStates = Array(8).fill(false);
+let remoteSetpoint = 0.0;
+let useRemoteSetpoint = false;
+
+// --- WebSocket Connection Logic ---
+const socket = new WebSocket('ws://localhost:3000');
+
+socket.onopen = function(event) {
+    console.log('Successfully connected to the WebSocket server.');
+    updateStatus('Remote control server connected.', true);
+};
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    if (data.type === 'setpoint') {
+        remoteSetpoint = parseFloat(data.value);
+        // If we are in remote mode, automatically update and send data
+        if (useRemoteSetpoint) {
+            document.getElementById('setpoint').value = remoteSetpoint.toFixed(2);
+            sendData();
+        }
+    }
+};
+
+socket.onclose = function(event) {
+    console.log('Disconnected from WebSocket server.');
+    updateStatus('Remote control server disconnected.', false);
+};
 
 // --- Gauge Configuration ---
 const gaugeConfigs = [
@@ -66,6 +94,11 @@ function applyTheme() {
     }
 }
 
+// --- Add Event Listener for the Toggle ---
+controlModeToggle.addEventListener('change', () => {
+    useRemoteSetpoint = controlModeToggle.checked;
+    document.getElementById('setpoint').disabled = useRemoteSetpoint;
+});
 
 // --- Gauge Creation and Update Logic ---
 function createGauge(config) {
@@ -281,14 +314,16 @@ async function listenForData() {
         }
     } catch (error) {
         if (port) {
-           updateStatus(`Read error: ${error.message}`);
-           await disconnect();
+            updateStatus(`Read error: ${error.message}`);
+            await disconnect();
         }
     }
 }
 
 // --- Data Sending Logic ---
 sendButton.addEventListener('click', async () => {
+    console.log("--- sendData() function called at:", new Date().toLocaleTimeString()); // <-- ADD THIS LINE
+
     if (!port || !writer) {
         updateStatus('Error: Not connected.');
         return;
@@ -300,7 +335,15 @@ sendButton.addEventListener('click', async () => {
         const ki = parseFloat(kiInput.value);
         const kd = parseFloat(kdInput.value);
         const tau = parseFloat(document.getElementById('tau').value);
-        const setpoint = parseFloat(document.getElementById('setpoint').value);
+
+        let setpoint;
+        if (useRemoteSetpoint) {
+            // If remote mode is active, use the value from the WebSocket
+            setpoint = remoteSetpoint;
+        } else {
+            // Otherwise, use the value from the manual textbox
+            setpoint = parseFloat(document.getElementById('setpoint').value);
+        }
 
         // Color value (remove #)
         const colorHex = rgbColorPicker.value.substring(1);
@@ -318,9 +361,9 @@ sendButton.addEventListener('click', async () => {
         });
 
         const dataString = `p: ${kp} i: ${ki} d: ${kd} t: ${tau} s: ${setpoint} b: ${colorHex} l: ${lMotor} r: ${rMotor} g: ${ledMask}\n`;
-        
-        await writer.write(dataString); 
-        
+
+        await writer.write(dataString);
+
         updateStatus('Data sent successfully.', true);
         console.log('Sent:', dataString);
 
