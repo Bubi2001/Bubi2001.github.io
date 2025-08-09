@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmbedDSP - Adrià Babiano Novella</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <!-- Header -->
+    <header class="bg-slate-900/70 backdrop-blur-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold text-white">Adrià Babiano Novella</a>
+            <a href="../index.html#projects" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                &larr; Back to Projects
+            </a>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Project Header -->
+        <section class="text-center py-12">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">EmbedDSP</h1>
+            <p class="text-xl text-slate-400 max-w-3xl mx-auto">EmbedDSP is a lightweight, dependency-free C library of Digital Signal Processing algorithms, designed specifically for real-time performance on resource-constrained microcontrollers. The main goal is to provide embedded systems developers with a reliable, memory-safe, and easy-to-use toolkit for common DSP tasks.</p>
+        </section>
+
+        <!-- Project Image/Gallery -->
+        <section class="mb-12">
+            <img src="https://placehold.co/1200x600/1e293b/94a3b8?text=EmbedDSP+main+image" alt="Project main image" class="w-full rounded-lg shadow-xl mx-auto">
+            <!-- You can add more images in a grid here if you like -->
+        </section>
+
+        <!-- Project Details -->
+        <section class="max-w-4xl mx-auto">
+            <div class="bg-slate-800 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-6">About This Project</h2>
+                
+                <div class="prose prose-invert prose-lg max-w-none text-slate-300">
+                    <p>
+                        Many embedded projects, from audio effects pedals to drone flight controllers, require standard DSP algorithms like filters and PID controllers. However, general-purpose libraries are often too heavy, have complex dependencies, or use dynamic memory allocation (malloc), which is unsuitable for deterministic, real-time systems. I created EmbedDSP to solve this problem by providing a professional-grade, open-source library that is portable, efficient, and safe for any bare-metal or RTOS environment.
+                    </p>
+                    <p>
+                        The development process focused heavily on creating a robust and modern project structure. A key challenge was designing a generic API for the filters that could support any order without dynamic memory. I solved this by implementing a "caller-allocates" pattern, where the user provides the memory buffers, and the library's functions manage them via pointers. This ensures maximum flexibility while maintaining real-time safety. A major part of the project was also establishing a full CI/CD pipeline using GitHub Actions, which automates testing on every commit and completely automates the release packaging process.
+                    </p>
+                    <p>
+                        The key features of the library are its portability (written in standard C99), its modular design, and its rigorous testing environment. Each algorithm is self-contained and comes with a dedicated unit test suite, ensuring reliability and correctness.
+                    </p>
+                    <h3 class="text-2xl font-bold text-white mt-8 mb-4">Technologies Used</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><b>Core Language:</b> C (C99) chosen for maximum portability and performance on embedded hardware.</li>
+                        <li><b>Build System:</b> CMake for cross-platform development and test suite compilation.</li>
+                        <li><b>Version Control & CI/CD:</b> Git, GitHub, and GitHub Actions to automate testing and release packaging.</li>
+                        <li><b>Unit Testing:</b> The Unity Test Framework to ensure the correctness and reliability of all algorithms.</li>
+                        <li><b>Filter Design & Analysis:</b> MATLAB for designing coefficients and visualizing filter frequency responses.</li>
+                    </ul>
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <!--- <a href="#" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Live Demo
+                        </a> --->
+                        <a href="htps://github.com/Bubi2001/EmbedDSP" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Source Code
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 mt-20">
+        <div class="container mx-auto px-6 py-6 text-center text-slate-400">
+            <p>&copy; 2025 Adrià Babiano Novella. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

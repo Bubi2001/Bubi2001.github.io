@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gaudí Suite - Adrià Babiano Novella</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <!-- Header -->
+    <header class="bg-slate-900/70 backdrop-blur-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold text-white">Adrià Babiano Novella</a>
+            <a href="../index.html#projects" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                &larr; Back to Projects
+            </a>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Project Header -->
+        <section class="text-center py-12">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">The Gaudí Suite</h1>
+            <p class="text-xl text-slate-400 max-w-3xl mx-auto">The Gaudí Suite is an open-source hardware ecosystem inspired by Catalan Modernisme, spanning the full stack of digital design from a reusable RTL library (Trencadís-RTL) and a custom 32-bit RISC-V CPU (Vitrall) to a complete System-on-Chip targeted for both FPGA (La Pedrera) and ASIC (La Sagrada Familia) implementation.</p>
+        </section>
+
+        <!-- Project Image/Gallery -->
+        <section class="mb-12">
+            <img src="https://placehold.co/1200x600/1e293b/94a3b8?text=Gaudi+Suite+main+image" alt="Project main image" class="w-full rounded-lg shadow-xl mx-auto">
+            <!-- You can add more images in a grid here if you like -->
+        </section>
+
+        <!-- Project Details -->
+        <section class="max-w-4xl mx-auto">
+            <div class="bg-slate-800 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-6">About This Project</h2>
+                
+                <div class="prose prose-invert prose-lg max-w-none text-slate-300">
+                    <p>
+                        The goal of "The Gaudí Suite" was to master the complete, vertical process of modern hardware creation, from a single logic gate to a physical, custom-designed integrated circuit. The project rejects the idea of purely functional, sterile design by embracing a philosophy of "Electronic Modernism", where engineering is infused with the artistry, structural ingenuity, and narrative depth found in the works of Antoni Gaudí. This suite is not just a collection of hardware modules; it's an architectural system with a story.
+                    </p>
+                    <p>
+                        The process began with laying the foundation: Trencadís-RTL, a library of reusable "mosaic pieces". This collection of SystemVerilog peripherals (GPIO, UART, SPI) and fundamental components (FIFOs, synchronizers) are all designed to be modular and robust, forming the building blocks for any system. The centerpiece of the architecture is the Vitrall core, a custom-designed 32-bit RISC-V CPU compliant with the RV32GB ISA. Like a stained-glass window, it's the artistic and logical heart of the system, transforming simple data into complex results.
+                    </p>
+                    <p>
+                        These pieces are integrated into La Pedrera, a complete System-on-Chip and a magnificent, functional prototype implemented on an FPGA. This serves as the proof-of-concept for the entire architecture. The ultimate and most ambitious goal of the project is La Sagrada Familia: the physical realization of the SoC as an ASIC using open-source tools. This represents the permanent "magnum opus", a testament to the immense challenge and dedication required to create custom silicon.
+                    </p>
+                    <p>
+                        One of the primary challenges was managing the immense complexity of this full-stack endeavor as a solo developer. To overcome this, I adopted a "strategic tooling" mindset. Instead of relying on slow, manual iteration, I focused on building custom tools to accelerate my workflow. A key example was developing a real-time control and telemetry GUI using the Web Serial API to tune a complex mechatronic system, reducing a month-long task to a matter of days. This philosophy of building better tools to build better systems is a core tenet of the project.
+                    </p>
+                    <h3 class="text-2xl font-bold text-white mt-8 mb-4">Technologies Used</h3>
+                    <ul class="list-disc list-inside">
+                        <li><b>Hardware Description:</b> SystemVerilog, RISC-V ISA</li>
+                        <li><b>Verification & CI/CD:</b> Verilator, Yosys, GitHub Actions</li>
+                        <li><b>Bus Protocol:</b> Wishbone</li>
+                        <li><b>ASIC Toolchain:</b> The OpenROAD Project, Sky130 PDK</li>
+                        <li><b>Firmware Development:</b> C, Assembly</li>
+                        <li><b>Documentation: Markdown, MkDocs, Python</li>
+                    </ul>
+                    
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <!--- <a href="#" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Live Demo
+                        </a> --->
+                        <!---
+                        <a href="https://github.com/Bubi2001/Trencadis-RTL" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Source Code (Trencadís RTL)
+                        </a>
+                        <a href="https://github.com/Bubi2001/Vitrall" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Source Code (Vitrall)
+                        </a>
+                        <a href="https://github.com/Bubi2001/Pedrera" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Source Code (La Pedrera)
+                        </a>
+                        <a href="https://github.com/Bubi2001/Sagrada-Familia" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Source Code (La Sagrada Familia)
+                        </a>
+                        --->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 mt-20">
+        <div class="container mx-auto px-6 py-6 text-center text-slate-400">
+            <p>&copy; 2025 Adrià Babiano Novella. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

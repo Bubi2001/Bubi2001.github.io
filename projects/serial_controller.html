@@ -3,98 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google" content="notranslate">
-    <title>Seesaw Controller ⚙️</title>
-    <link rel="stylesheet" href="serial_controller/style.css">
+    <title>Serial Controller - Adrià Babiano Novella</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-300">
 
-<div class="top-bar">
-    <button id="darkModeToggle">🌙</button>
-</div>
+    <!-- Header -->
+    <header class="bg-slate-900/70 backdrop-blur-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold text-white">Adrià Babiano Novella</a>
+            <a href="../index.html#projects" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                &larr; Back to Projects
+            </a>
+        </nav>
+    </header>
 
-<div class="container">
-    <h1>Seesaw Controller ⚙️</h1>
-    
-    <div class="control-group">
-        <button id="refreshPortsButton">Request/Refresh Ports</button>
-        <select id="portSelector" disabled></select>
-        <select id="baudRate">
-            <option value="9600">9600</option>
-            <option value="19200">19200</option>
-            <option value="38400">38400</option>
-            <option value="57600">57600</option>
-            <option value="115200" selected>115200</option>
-        </select>
-        <button id="connectButton" disabled>Connect</button>
-    </div>
+    <main class="container mx-auto px-6 py-12">
+        <!-- Project Header -->
+        <section class="text-center py-12">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">Serial Controller</h1>
+            <p class="text-xl text-slate-400 max-w-3xl mx-auto">A dynamic web-based GUI that leverages the Web Serial API to provide real-time control, live parameter tuning, and telemetry visualization for complex mechatronic systems, drastically accelerating development and debugging cycles.</p>
+        </section>
 
-    <hr>
-    
-    <div class="control-group">
-        <div>
-            <div class="input-group"><label for="kp">Kp:</label><input type="text" id="kp" value="0.0075"></div>
-            <div class="input-group"><label for="ki">Ki:</label><input type="text" id="ki" value="0.0101"></div>
-            <div class="input-group"><label for="kd">Kd:</label><input type="text" id="kd" value="0.0014"></div>
+        <!-- Project Image/Gallery -->
+        <section class="mb-12">
+            <img src="https://placehold.co/1200x600/1e293b/94a3b8?text=Project+Main+Image" alt="Project main image" class="w-full rounded-lg shadow-xl mx-auto">
+            <!-- You can add more images in a grid here if you like -->
+        </section>
+
+        <!-- Project Details -->
+        <section class="max-w-4xl mx-auto">
+            <div class="bg-slate-800 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-6">About This Project</h2>
+                <div class="prose prose-invert prose-lg max-w-none text-slate-300">
+                    <p>
+                    While developing a complex mechatronic project—a self-balancing seesaw robot—I encountered a critical bottleneck that plagues many embedded systems projects: the slow and tedious cycle of tuning a PID controller. The traditional workflow of editing a constant in the code, recompiling, uploading the firmware, and restarting the system could take several minutes for every single adjustment. This turned a creative engineering challenge into a frustrating exercise in patience. I realized that solving this workflow problem was more important than tackling the tuning itself.
+                    </p>
+                    <p>
+                    My solution was to invest time upfront to build a superior tool: a real-time control interface. Instead of using a familiar language like Python, I took a calculated risk and decided to build it as a modern web application using JavaScript and the Web Serial API, despite having no prior professional experience with these technologies. This "high-risk, high-reward" decision was driven by the desire to create a truly platform-independent tool that anyone could use in a browser, and to accelerate my own learning in web development for future projects like my portfolio.
+                    </p>
+                    <p>
+                    The gamble paid off. In a single weekend, I developed this complete control and telemetry dashboard from scratch. The tool was instrumental in completing the entire balancing robot project, a task that typically takes teams several months, in just one week of focused work. This project is a testament to my philosophy of "strategic tooling": building better tools to build better systems, faster.
+                    </p>
+                    <h3 class="text-2xl font-bold text-white mt-8 mb-4">Key Features</h3>
+                    <ul class="list-disc list-inside">
+                    <li><b>Live Parameter Tuning:</b> Modify critical firmware variables, such as PID controller constants (P, I, D), in real-time without recompiling or restarting the embedded device.</li>
+                    <li><b>Real-Time Telemetry:</b> Visualize live data from the hardware using graphical gauges for motor speeds and a display for the seesaw's current angle.</li>
+                    <li><b>Platform Independent Control:</b> Runs in any modern web browser that supports the Web Serial API (like Chrome or Edge) on any operating system, with no need to install dependencies.</li>
+                    <li><b>Simplified and Complete Demos:</b> Provides two versions of the interface—a full-featured controller with all tuning options, and a simplified version for basic operation.</li>
+                    </ul>
+                    <h3 class="text-2xl font-bold text-white mt-8 mb-4">Technologies Used</h3>
+                    <ul class="list-disc list-inside">
+                        <li><b>Frontend:</b> HTML5, CSS3, JavaScript</li>
+                        <li><b>Browser API:</b> Web Serial API</li>
+                        <li><b>Development Environment:</b> Node.js</li>
+                        <li><b>Embedded System:</b> C</li>
+                    </ul>
+                    
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <a href="demo/serial_controller.html" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Live Demo
+                        </a>
+                        <a href="demo/simple_serial_controller.html" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                            View Live Demo of simplified model
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 mt-20">
+        <div class="container mx-auto px-6 py-6 text-center text-slate-400">
+            <p>&copy; 2025 Adrià Babiano Novella. All Rights Reserved.</p>
         </div>
-        <div>
-            <div class="input-group"><label for="tau">Tau:</label><input type="text" id="tau" value="0.008"></div>
-            <div class="input-group"><label for="setpoint">Setpoint:</label><input type="text" id="setpoint" value="0.0"></div>
-        </div>
-        <!-- Add this inside a .control-group in your HTML -->
-        <div class="mode-switch">
-            <label for="controlModeToggle">Use Phone as Setpoint:</label>
-            <label class="switch">
-                <input type="checkbox" id="controlModeToggle">
-                <span class="slider round"></span>
-            </label>
-        </div>
-    </div>
-    
-    <hr>
+    </footer>
 
-    <div class="control-group">
-        <button class="motor-button" id="leftMotorButton">Start Left Motor</button>
-        <button class="motor-button" id="rightMotorButton">Start Right Motor</button>
-    </div>
-
-    <div class="control-group">
-        <label for="rgbColorPicker">RGB LED Color:</label>
-        <input type="color" id="rgbColorPicker" value="#ff0000">
-    </div>
-    
-    <div class="led-group">
-        <!-- 4 Red LEDs -->
-        <span class="led-indicator red" data-led-index="0"></span>
-        <span class="led-indicator red" data-led-index="1"></span>
-        <span class="led-indicator red" data-led-index="2"></span>
-        <span class="led-indicator red" data-led-index="3"></span>
-        <!-- 4 Green LEDs -->
-        <span class="led-indicator green" data-led-index="4"></span>
-        <span class="led-indicator green" data-led-index="5"></span>
-        <span class="led-indicator green" data-led-index="6"></span>
-        <span class="led-indicator green" data-led-index="7"></span>
-    </div>
-
-    <hr>
-
-    <div class="control-group">
-        <button id="sendButton">Send All Data</button>
-    </div>
-
-    <div id="log">
-        <span id="status-indicator" class="disconnected"></span>
-        <span id="status-text">Status: Disconnected. Request port access to begin.</span>
-    </div>
-</div>
-
-<div class="container">
-    <h2>Live Data</h2>
-    <div id="gauges-container">
-        <!-- Gauges will be inserted here by JavaScript -->
-    </div>
-</div>
-
-<script src="serial_controller/script.js" defer></script>
 </body>
 </html>
