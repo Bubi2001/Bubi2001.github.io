@@ -1,17 +1,16 @@
 // --- DOM Elements ---
 const refreshPortsButton = document.getElementById('refreshPortsButton');
 const connectButton = document.getElementById('connectButton');
-const sendButton = document.getElementById('sendButton');
 const portSelector = document.getElementById('portSelector');
 const baudRateSelector = document.getElementById('baudRate');
 const statusIndicator = document.getElementById('status-indicator');
 const statusText = document.getElementById('status-text');
 const gaugesContainer = document.getElementById('gauges-container');
-const kpInput = document.getElementById('kp');
-const kiInput = document.getElementById('ki');
-const kdInput = document.getElementById('kd');
+const mainControls = document.getElementById('main-controls');
+const pidInputs = document.querySelectorAll('.pid-input');
 const ledIndicators = document.querySelectorAll('.led-indicator');
 const darkModeToggle = document.getElementById('darkModeToggle');
+const controlModeToggle = document.getElementById('controlModeToggle');
 
 // --- State Variables ---
 let port;
@@ -19,6 +18,34 @@ let writer;
 let reader;
 let availablePorts = [];
 let ledStates = Array(8).fill(false);
+let remoteSetpoint = 0.0;
+let useRemoteSetpoint = false;
+let sendDataTimeout;
+
+// --- WebSocket Connection Logic ---
+const socket = new WebSocket('ws://localhost:3000');
+
+socket.onopen = function(event) {
+    console.log('Successfully connected to the WebSocket server.');
+    updateStatus('Remote control server connected.', true);
+};
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    if (data.type === 'setpoint') {
+        remoteSetpoint = parseFloat(data.value);
+        // If we are in remote mode, automatically update and send data
+        if (useRemoteSetpoint) {
+            document.getElementById('setpoint').value = remoteSetpoint.toFixed(2);
+            sendData();
+        }
+    }
+};
+
+socket.onclose = function(event) {
+    console.log('Disconnected from WebSocket server.');
+    updateStatus('Remote control server disconnected.', false);
+};
 
 // --- Gauge Configuration ---
 const gaugeConfigs = [
@@ -34,6 +61,29 @@ function updateStatus(text, connected = false) {
     } else {
         statusIndicator.classList.remove('connected');
         statusIndicator.classList.add('disconnected');
+    }
+}
+
+function setControlsDisabled(disabled) {
+    mainControls.disabled = disabled;
+}
+
+// --- Debounce function ---
+// This prevents the sendData function from being called too frequently
+function debounceSendData() {
+    clearTimeout(sendDataTimeout);
+    sendDataTimeout = setTimeout(sendData, 1000); // Wait 1s after user stops typing
+}
+
+// --- Input Validation ---
+function validateInput(event) {
+    const input = event.target;
+    // Regex to check for a valid floating point number (allows negative)
+    const isValid = /^-?\d*\.?\d*$/.test(input.value);
+    if (isValid) {
+        input.classList.remove('invalid');
+    } else {
+        input.classList.add('invalid');
     }
 }
 
@@ -58,6 +108,13 @@ function applyTheme() {
         darkModeToggle.textContent = '🌙';
     }
 }
+
+// --- Add Event Listener for the Toggle ---
+controlModeToggle.addEventListener('change', () => {
+    useRemoteSetpoint = controlModeToggle.checked;
+    document.getElementById('setpoint').disabled = useRemoteSetpoint;
+    sendData();
+});
 
 // --- Gauge Creation and Update Logic ---
 function createGauge(config) {
@@ -94,12 +151,20 @@ gaugeConfigs.forEach(config => {
     updateGauge(config, 0);
 });
 
-// --- LED Control Logic ---
+// --- Event Listeners for Automatic Sending ---
+pidInputs.forEach(input => {
+    input.addEventListener('input', () => {
+        validateInput({ target: input }); // Validate on every input
+        debounceSendData(); // Send data after a short delay
+    });
+});
+
 ledIndicators.forEach(led => {
     led.addEventListener('click', () => {
         const index = parseInt(led.dataset.ledIndex, 10);
         ledStates[index] = !ledStates[index];
         led.classList.toggle('on', ledStates[index]);
+        sendData(); // Send immediately on click
     });
 });
 
@@ -116,7 +181,6 @@ async function populatePortSelector() {
         updateStatus(`Error getting ports: ${error.message}`);
         return;
     }
-    
     portSelector.innerHTML = '';
     if (availablePorts.length === 0) {
         portSelector.innerHTML = '<option value="">No ports found</option>';
@@ -165,9 +229,8 @@ async function connect() {
         updateStatus("Error: No port selected.");
         return;
     }
-    
+
     port = availablePorts[selectedPortIndex];
-    
     try {
         const baudRate = parseInt(baudRateSelector.value, 10);
         await port.open({ baudRate });
@@ -188,7 +251,8 @@ async function connect() {
         refreshPortsButton.disabled = true;
 
         listenForData();
-        
+
+        setControlsDisabled(false);
     } catch (error) {
         updateStatus(`Error: ${error.message}`);
     }
@@ -213,9 +277,10 @@ async function disconnect() {
     portSelector.disabled = false;
     baudRateSelector.disabled = false;
     refreshPortsButton.disabled = false;
-    
+
     gaugeConfigs.forEach(config => updateGauge(config, 0));
     resetLedControls();
+    setControlsDisabled(true);
 }
 
 // --- Data Listening Logic ---
@@ -225,23 +290,17 @@ async function listenForData() {
         while (port && port.readable) {
             const { value, done } = await reader.read();
             if (done) break;
-            
             partialData += value;
             let newlineIndex;
-            
             while ((newlineIndex = partialData.indexOf('\n')) !== -1) {
                 const line = partialData.slice(0, newlineIndex).trim();
                 partialData = partialData.slice(newlineIndex + 1);
-
                 if (line) {
-                    // Updated regex to only look for the angle value.
                     const regex = /A:\s*(-?[\d.]+)/;
                     const match = line.match(regex);
-
                     if (match) {
                         const tiltAngle = parseFloat(match[1]);
                         if (!isNaN(tiltAngle)) {
-                            // Update the first (and only) gauge.
                             updateGauge(gaugeConfigs[0], tiltAngle);
                         }
                     }
@@ -257,19 +316,40 @@ async function listenForData() {
 }
 
 // --- Data Sending Logic ---
-sendButton.addEventListener('click', async () => {
+async function sendData() {
     if (!port || !writer) {
         updateStatus('Error: Not connected.');
         return;
     }
 
     try {
-        // PID and other float values
-        const kp = parseFloat(kpInput.value);
-        const ki = parseFloat(kiInput.value);
-        const kd = parseFloat(kdInput.value);
-        const tau = parseFloat(document.getElementById('tau').value);
-        const setpoint = parseFloat(document.getElementById('setpoint').value);
+        // Validate all number inputs before sending
+        let allValid = true;
+        const values = {};
+        pidInputs.forEach(input => {
+            const parsedValue = parseFloat(input.value);
+            if (isNaN(parsedValue)) {
+                input.classList.add('invalid');
+                allValid = false;
+            }
+            values[input.id] = parsedValue;
+        });
+
+        if (!allValid) {
+            updateStatus('Error: Invalid number in one of the fields.');
+            return;
+        }
+
+        // Use the validated values
+        const kp = values.kp;
+        const ki = values.ki;
+        const kd = values.kd;
+        const tau = values.tau;
+        let setpoint = values.setpoint;
+
+        if (useRemoteSetpoint) {
+            setpoint = remoteSetpoint;
+        }
 
         // LED bitmask
         let ledMask = 0;
@@ -279,7 +359,6 @@ sendButton.addEventListener('click', async () => {
             }
         });
 
-        // Simplified data string
         const dataString = `p: ${kp} i: ${ki} d: ${kd} t: ${tau} s: ${setpoint} g: ${ledMask}\n`;
 
         await writer.write(dataString);
@@ -290,7 +369,7 @@ sendButton.addEventListener('click', async () => {
     } catch (error) {
         updateStatus(`Send error: ${error.message}`, true);
     }
-});
+}
 
 // --- Initial Page Load State ---
 window.addEventListener('load', () => {

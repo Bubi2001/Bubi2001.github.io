@@ -1,15 +1,13 @@
 // --- DOM Elements ---
 const refreshPortsButton = document.getElementById('refreshPortsButton');
 const connectButton = document.getElementById('connectButton');
-const sendButton = document.getElementById('sendButton');
 const portSelector = document.getElementById('portSelector');
 const baudRateSelector = document.getElementById('baudRate');
 const statusIndicator = document.getElementById('status-indicator');
 const statusText = document.getElementById('status-text');
 const gaugesContainer = document.getElementById('gauges-container');
-const kpInput = document.getElementById('kp');
-const kiInput = document.getElementById('ki');
-const kdInput = document.getElementById('kd');
+const mainControls = document.getElementById('main-controls');
+const pidInputs = document.querySelectorAll('.pid-input');
 const leftMotorButton = document.getElementById('leftMotorButton');
 const rightMotorButton = document.getElementById('rightMotorButton');
 const rgbColorPicker = document.getElementById('rgbColorPicker');
@@ -27,6 +25,7 @@ let rightMotorOn = false;
 let ledStates = Array(8).fill(false);
 let remoteSetpoint = 0.0;
 let useRemoteSetpoint = false;
+let sendDataTimeout;
 
 // --- WebSocket Connection Logic ---
 const socket = new WebSocket('ws://localhost:3000');
@@ -72,6 +71,29 @@ function updateStatus(text, connected = false) {
     }
 }
 
+function setControlsDisabled(disabled) {
+    mainControls.disabled = disabled;
+}
+
+// --- Debounce function ---
+// This prevents the sendData function from being called too frequently
+function debounceSendData() {
+    clearTimeout(sendDataTimeout);
+    sendDataTimeout = setTimeout(sendData, 1000); // Wait 1s after user stops typing
+}
+
+// --- Input Validation ---
+function validateInput(event) {
+    const input = event.target;
+    // Regex to check for a valid floating point number (allows negative)
+    const isValid = /^-?\d*\.?\d*$/.test(input.value);
+    if (isValid) {
+        input.classList.remove('invalid');
+    } else {
+        input.classList.add('invalid');
+    }
+}
+
 // --- Dark Mode Logic ---
 darkModeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
@@ -98,6 +120,7 @@ function applyTheme() {
 controlModeToggle.addEventListener('change', () => {
     useRemoteSetpoint = controlModeToggle.checked;
     document.getElementById('setpoint').disabled = useRemoteSetpoint;
+    sendData();
 });
 
 // --- Gauge Creation and Update Logic ---
@@ -134,17 +157,26 @@ gaugeConfigs.forEach(config => {
     updateGauge(config, 0);
 });
 
-// --- New Control Logic ---
+// --- Event Listeners for Automatic Sending ---
+pidInputs.forEach(input => {
+    input.addEventListener('input', () => {
+        validateInput({ target: input }); // Validate on every input
+        debounceSendData(); // Send data after a short delay
+    });
+});
+
 leftMotorButton.addEventListener('click', () => {
     leftMotorOn = !leftMotorOn;
     leftMotorButton.textContent = leftMotorOn ? 'Stop Left Motor' : 'Start Left Motor';
     leftMotorButton.classList.toggle('on', leftMotorOn);
+    sendData(); // Send immediately on click
 });
 
 rightMotorButton.addEventListener('click', () => {
     rightMotorOn = !rightMotorOn;
     rightMotorButton.textContent = rightMotorOn ? 'Stop Right Motor' : 'Start Right Motor';
     rightMotorButton.classList.toggle('on', rightMotorOn);
+    sendData(); // Send immediately on click
 });
 
 ledIndicators.forEach(led => {
@@ -152,8 +184,11 @@ ledIndicators.forEach(led => {
         const index = parseInt(led.dataset.ledIndex, 10);
         ledStates[index] = !ledStates[index];
         led.classList.toggle('on', ledStates[index]);
+        sendData(); // Send immediately on click
     });
 });
+
+rgbColorPicker.addEventListener('input', debounceSendData); // Debounce color changes
 
 function resetControls() {
     leftMotorOn = false;
@@ -168,7 +203,6 @@ function resetControls() {
     ledIndicators.forEach(led => led.classList.remove('on'));
 }
 
-
 // --- Port Selection Logic ---
 async function populatePortSelector() {
     try {
@@ -177,7 +211,6 @@ async function populatePortSelector() {
         updateStatus(`Error getting ports: ${error.message}`);
         return;
     }
-    
     portSelector.innerHTML = '';
     if (availablePorts.length === 0) {
         portSelector.innerHTML = '<option value="">No ports found</option>';
@@ -226,9 +259,8 @@ async function connect() {
         updateStatus("Error: No port selected.");
         return;
     }
-    
-    port = availablePorts[selectedPortIndex];
-    
+
+    port = availablePorts[selectedPortIndex];    
     try {
         const baudRate = parseInt(baudRateSelector.value, 10);
         await port.open({ baudRate });
@@ -249,7 +281,8 @@ async function connect() {
         refreshPortsButton.disabled = true;
 
         listenForData();
-        
+
+        setControlsDisabled(false);
     } catch (error) {
         updateStatus(`Error: ${error.message}`);
     }
@@ -274,9 +307,10 @@ async function disconnect() {
     portSelector.disabled = false;
     baudRateSelector.disabled = false;
     refreshPortsButton.disabled = false;
-    
+
     gaugeConfigs.forEach(config => updateGauge(config, 0));
     resetControls();
+    setControlsDisabled(true);
 }
 
 // --- Data Listening Logic ---
@@ -286,23 +320,18 @@ async function listenForData() {
         while (port && port.readable) {
             const { value, done } = await reader.read();
             if (done) break;
-            
             partialData += value;
             let newlineIndex;
-            
             while ((newlineIndex = partialData.indexOf('\n')) !== -1) {
                 const line = partialData.slice(0, newlineIndex).trim();
                 partialData = partialData.slice(newlineIndex + 1);
-
                 if (line) {
                     const regex = /L:\s*(-?[\d.]+)\s*A:\s*(-?[\d.]+)\s*R:\s*(-?[\d.]+)/;
                     const match = line.match(regex);
-
                     if (match) {
                         const leftMotorRpm = parseFloat(match[1]);
                         const tiltAngle = parseFloat(match[2]);
                         const rightMotorRpm = parseFloat(match[3]);
-
                         if (![leftMotorRpm, tiltAngle, rightMotorRpm].some(isNaN)) {
                             updateGauge(gaugeConfigs[0], leftMotorRpm);
                             updateGauge(gaugeConfigs[1], tiltAngle);
@@ -321,38 +350,44 @@ async function listenForData() {
 }
 
 // --- Data Sending Logic ---
-sendButton.addEventListener('click', async () => {
-    console.log("--- sendData() function called at:", new Date().toLocaleTimeString()); // <-- ADD THIS LINE
-
+async function sendData() {
     if (!port || !writer) {
         updateStatus('Error: Not connected.');
         return;
     }
 
     try {
-        // PID and other float values
-        const kp = parseFloat(kpInput.value);
-        const ki = parseFloat(kiInput.value);
-        const kd = parseFloat(kdInput.value);
-        const tau = parseFloat(document.getElementById('tau').value);
+        // Validate all number inputs before sending
+        let allValid = true;
+        const values = {};
+        pidInputs.forEach(input => {
+            const parsedValue = parseFloat(input.value);
+            if (isNaN(parsedValue)) {
+                input.classList.add('invalid');
+                allValid = false;
+            }
+            values[input.id] = parsedValue;
+        });
 
-        let setpoint;
-        if (useRemoteSetpoint) {
-            // If remote mode is active, use the value from the WebSocket
-            setpoint = remoteSetpoint;
-        } else {
-            // Otherwise, use the value from the manual textbox
-            setpoint = parseFloat(document.getElementById('setpoint').value);
+        if (!allValid) {
+            updateStatus('Error: Invalid number in one of the fields.');
+            return;
         }
 
-        // Color value (remove #)
-        const colorHex = rgbColorPicker.value.substring(1);
+        // Use the validated values
+        const kp = values.kp;
+        const ki = values.ki;
+        const kd = values.kd;
+        const tau = values.tau;
+        let setpoint = values.setpoint;
 
-        // Motor states (0 or 1)
+        if (useRemoteSetpoint) {
+            setpoint = remoteSetpoint;
+        }
+
+        const colorHex = rgbColorPicker.value.substring(1);
         const lMotor = leftMotorOn ? 1 : 0;
         const rMotor = rightMotorOn ? 1 : 0;
-        
-        // LED bitmask
         let ledMask = 0;
         ledStates.forEach((state, index) => {
             if (state) {
@@ -370,7 +405,7 @@ sendButton.addEventListener('click', async () => {
     } catch (error) {
         updateStatus(`Send error: ${error.message}`, true);
     }
-});
+}
 
 // Initial page load state
 window.addEventListener('load', () => {

@@ -15,7 +15,6 @@
 
 <div class="container">
     <h1>Seesaw Controller ⚙️</h1>
-    
     <div class="control-group">
         <button id="refreshPortsButton">Request/Refresh Ports</button>
         <select id="portSelector" disabled></select>
@@ -30,57 +29,49 @@
     </div>
 
     <hr>
-    
-    <div class="control-group">
-        <div>
-            <div class="input-group"><label for="kp">Kp:</label><input type="text" id="kp" value="0.0075"></div>
-            <div class="input-group"><label for="ki">Ki:</label><input type="text" id="ki" value="0.0101"></div>
-            <div class="input-group"><label for="kd">Kd:</label><input type="text" id="kd" value="0.0014"></div>
+    <!-- All main controls are wrapped in a fieldset, disabled by default -->
+    <fieldset id="main-controls" disabled>
+        <div class="control-group">
+            <div>
+                <div class="input-group"><label for="kp">Kp:</label><input type="text" class="pid-input" id="kp" value="0.0075"></div>
+                <div class="input-group"><label for="ki">Ki:</label><input type="text" class="pid-input" id="ki" value="0.0101"></div>
+                <div class="input-group"><label for="kd">Kd:</label><input type="text" class="pid-input" id="kd" value="0.0014"></div>
+            </div>
+            <div>
+                <div class="input-group"><label for="tau">Tau:</label><input type="text" class="pid-input" id="tau" value="0.008"></div>
+                <div class="input-group"><label for="setpoint">Setpoint:</label><input type="text" class="pid-input" id="setpoint" value="0.0"></div>
+            </div>
+            <div class="mode-switch">
+                <label for="controlModeToggle">Use Phone as Setpoint:</label>
+                <label class="switch">
+                    <input type="checkbox" id="controlModeToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </div>
-        <div>
-            <div class="input-group"><label for="tau">Tau:</label><input type="text" id="tau" value="0.008"></div>
-            <div class="input-group"><label for="setpoint">Setpoint:</label><input type="text" id="setpoint" value="0.0"></div>
+        <hr>
+
+        <div class="control-group">
+            <button class="motor-button" id="leftMotorButton">Start Left Motor</button>
+            <button class="motor-button" id="rightMotorButton">Start Right Motor</button>
         </div>
-        <!-- Add this inside a .control-group in your HTML -->
-        <div class="mode-switch">
-            <label for="controlModeToggle">Use Phone as Setpoint:</label>
-            <label class="switch">
-                <input type="checkbox" id="controlModeToggle">
-                <span class="slider round"></span>
-            </label>
+
+        <div class="control-group">
+            <label for="rgbColorPicker">RGB LED Color:</label>
+            <input type="color" id="rgbColorPicker" value="#ff0000">
         </div>
-    </div>
-    
-    <hr>
 
-    <div class="control-group">
-        <button class="motor-button" id="leftMotorButton">Start Left Motor</button>
-        <button class="motor-button" id="rightMotorButton">Start Right Motor</button>
-    </div>
-
-    <div class="control-group">
-        <label for="rgbColorPicker">RGB LED Color:</label>
-        <input type="color" id="rgbColorPicker" value="#ff0000">
-    </div>
-    
-    <div class="led-group">
-        <!-- 4 Red LEDs -->
-        <span class="led-indicator red" data-led-index="0"></span>
-        <span class="led-indicator red" data-led-index="1"></span>
-        <span class="led-indicator red" data-led-index="2"></span>
-        <span class="led-indicator red" data-led-index="3"></span>
-        <!-- 4 Green LEDs -->
-        <span class="led-indicator green" data-led-index="4"></span>
-        <span class="led-indicator green" data-led-index="5"></span>
-        <span class="led-indicator green" data-led-index="6"></span>
-        <span class="led-indicator green" data-led-index="7"></span>
-    </div>
-
-    <hr>
-
-    <div class="control-group">
-        <button id="sendButton">Send All Data</button>
-    </div>
+        <div class="led-group">
+            <span class="led-indicator red" data-led-index="0"></span>
+            <span class="led-indicator red" data-led-index="1"></span>
+            <span class="led-indicator red" data-led-index="2"></span>
+            <span class="led-indicator red" data-led-index="3"></span>
+            <span class="led-indicator green" data-led-index="4"></span>
+            <span class="led-indicator green" data-led-index="5"></span>
+            <span class="led-indicator green" data-led-index="6"></span>
+            <span class="led-indicator green" data-led-index="7"></span>
+        </div>
+    </fieldset>
 
     <div id="log">
         <span id="status-indicator" class="disconnected"></span>
@@ -90,17 +81,14 @@
 
 <div class="container">
     <h2>Live Data</h2>
-    <div id="gauges-container">
-        <!-- Gauges will be inserted here by JavaScript -->
-    </div>
+    <div id="gauges-container"></div>
 </div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-800/50">
-        <div class="container mx-auto px-6 py-6 text-center text-slate-400">
-            <p>&copy; 2025 Adrià Babiano Novella. All Rights Reserved.</p>
-        </div>
-    </footer>
+<footer class="bg-slate-800/50">
+    <div class="container mx-auto px-6 py-6 text-center text-slate-400">
+        <p>&copy; 2025 Adrià Babiano Novella. All Rights Reserved.</p>
+    </div>
+</footer>
 
 <script src="serial_controller/script.js" defer></script>
 </body>

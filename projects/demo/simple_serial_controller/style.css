@@ -66,6 +66,7 @@ body {
     margin-bottom: 1rem;
     transition: background-color 0.3s ease;
 }
+
 .control-group, .led-group {
     margin-bottom: 1rem;
     display: flex;
@@ -74,12 +75,14 @@ body {
     align-items: center;
     gap: 10px;
 }
+
 .input-group {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 0.5rem;
 }
+
 .input-group label {
     display: inline-block;
     width: 130px;
@@ -87,6 +90,7 @@ body {
     margin-right: 10px;
     font-weight: 500;
 }
+
 input[type="text"], select, button {
     padding: 0.6rem;
     border-radius: 6px;
@@ -103,6 +107,7 @@ input[type="text"]:focus, select:focus {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     outline: none;
 }
+
 button {
     cursor: pointer;
     border: none;
@@ -110,10 +115,24 @@ button {
     min-width: 120px;
     font-weight: 500;
 }
-#refreshPortsButton { background-color: #17a2b8; }
-#connectButton { background-color: #007bff; }
-#connectButton.disconnect { background-color: var(--color-danger); }
-#sendButton { background-color: var(--color-success); font-size: 1.1rem; padding: 0.8rem 1.2rem;}
+
+#refreshPortsButton {
+    background-color: #17a2b8;
+}
+
+#connectButton {
+    background-color: #007bff;
+}
+
+#connectButton.disconnect {
+    background-color: var(--color-danger);
+}
+
+#sendButton {
+    background-color: var(--color-success);
+    font-size: 1.1rem;
+    padding: 0.8rem 1.2rem;
+}
 
 #log {
     margin-top: 1rem;
@@ -124,6 +143,7 @@ button {
     align-items: center;
     justify-content: center;
 }
+
 #status-indicator {
     display: inline-block;
     width: 12px;
@@ -132,13 +152,21 @@ button {
     margin-right: 8px;
     transition: background-color 0.3s ease;
 }
-#status-indicator.disconnected { background-color: var(--color-danger); }
-#status-indicator.connected { background-color: var(--color-success); }
+
+#status-indicator.disconnected {
+    background-color: var(--color-danger);
+}
+
+#status-indicator.connected {
+    background-color: var(--color-success);
+}
+
 hr {
     border: none;
     border-top: 1px solid var(--hr-color);
     margin: 1.5rem 0;
 }
+
 /* Gauge Styles */
 #gauges-container {
     display: flex;
@@ -147,25 +175,30 @@ hr {
     gap: 20px;
     width: 100%;
 }
+
 .gauge {
     width: 220px;
     text-align: center;
 }
+
 .gauge-title {
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 5px;
 }
+
 .gauge .gauge-body {
     width: 100%;
     height: 110px;
     position: relative;
 }
+
 .gauge .gauge-dial {
     fill: var(--gauge-dial-fill);
     stroke: var(--gauge-dial-stroke);
     stroke-width: 2;
 }
+
 .gauge .gauge-needle {
     fill: var(--color-danger);
     stroke: #c02839;
@@ -173,12 +206,14 @@ hr {
     transform-origin: 50px 70px;
     transition: transform 0.2s ease-out;
 }
+
 .gauge-value-display {
     font-size: 24px;
     font-weight: bold;
     color: var(--text-color);
     margin-top: 5px;
 }
+
 /* LED Indicator Styles */
 .led-indicator {
     width: 30px;
@@ -188,7 +223,89 @@ hr {
     transition: all 0.2s ease;
     border: 2px solid #888;
 }
-.led-indicator.red { background-color: #58151c; }
-.led-indicator.red.on { background-color: var(--color-danger); box-shadow: 0 0 10px var(--color-danger); }
-.led-indicator.green { background-color: #12421f; }
-.led-indicator.green.on { background-color: var(--color-success); box-shadow: 0 0 10px var(--color-success); }
+
+.led-indicator.red {
+    background-color: #58151c;
+}
+
+.led-indicator.red.on {
+    background-color: var(--color-danger);
+    box-shadow: 0 0 10px var(--color-danger);
+}
+
+.led-indicator.green {
+    background-color: #12421f;
+}
+
+.led-indicator.green.on {
+    background-color: var(--color-success);
+    box-shadow: 0 0 10px var(--color-success);
+}
+
+.mode-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: .4s
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #fff;
+    transition: .4s
+}
+
+input:checked+.slider {
+    background-color: #4CAF50
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #4CAF50
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px)
+}
+
+.slider.round {
+    border-radius: 34px
+}
+
+.slider.round:before {
+    border-radius: 50%
+}
+
+/* New style for invalid input fields */
+input.invalid {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
