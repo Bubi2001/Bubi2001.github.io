@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPU9250 Library - Adrià Babiano Novella</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <!-- Header -->
+    <header class="bg-slate-900/70 backdrop-blur-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold text-white">Adrià Babiano Novella</a>
+            <a href="../index.html#projects" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                &larr; Back to Projects
+            </a>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12"></main>
+        <section class="text-center py-12">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">MPU-9250 Driver for TI-RTOS</h1>
+            <p class="text-xl text-slate-400 max-w-3xl mx-auto">An open-source C/C++ driver for the MPU-9250 IMU, tailored for the TI-RTOS ecosystem. This library provides multiple levels of abstraction, from raw sensor data to a full-featured DMP wrapper, and includes a complete 6-point tumble calibration utility to ensure maximum accuracy.</p>
+        </section>
+
+        <section class="mb-12">
+            <img src="https://placehold.co/1200x600/1e293b/94a3b8?text=MPU9250+Driver+in+Action" alt="Project main image" class="w-full rounded-lg shadow-xl mx-auto">
+        </section>
+
+        <section class="max-w-4xl mx-auto">
+            <div class="bg-slate-800 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-6">About This Project</h2>
+                <div class="prose prose-invert prose-lg max-w-none text-slate-300">
+                    <p>
+                        Developed to support the "Seesaw Balancing Robot" project, this library was created to address the lack of a high-quality, easy-to-use MPU-9250 driver for the TI-RTOS platform. The goal was to create a robust, well-documented, and easy-to-integrate driver to help future students and embedded developers get started quickly with this powerful 9-axis sensor.
+                    </p>
+                    <p>
+                        The library is built on a multi-layered architecture, allowing users to choose the level of abstraction that best suits their needs. It includes a foundational **C library** for direct register access, a modern **C++ class** that encapsulates the complexity of the sensor's proprietary Digital Motion Processor (DMP), and a **C-compatible wrapper** to safely use the C++ class from any standard C project. This structure provides both low-level control for experts and a simple, high-level API for rapid prototyping.
+                    </p>
+                    <h3 class="text-2xl font-bold text-white mt-8 mb-4">Technologies Used</h3>
+                    <ul class="list-disc list-inside">
+                        <li><b>Firmware & Drivers:</b> C, C++</li>
+                        <li><b>Real-Time OS:</b> TI-RTOS</li>
+                        <li><b>Hardware Interface:</b> I2C</li>
+                        <li><b>Build Environment:</b> Code Composer Studio</li>
+                        <li><b>Documentation:</b> Markdown, MkDocs</li>
+                    </ul>
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <a href="https://github.com/Bubi2001/MPU9250_MSP-EXP432E401Y" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105" target="_blank" rel="noopener noreferrer">
+                            View Source Code
+                        </a>
+                        <a href="https://bubi2001.github.io/MPU9250_MSP-EXP432E401Y/" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105" target="_blank" rel="noopener noreferrer">
+                            View Documentation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 mt-20">
+        <div class="container mx-auto px-6 py-6 text-center text-slate-400">
+            <p>&copy; 2025 Adrià Babiano Novella. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
