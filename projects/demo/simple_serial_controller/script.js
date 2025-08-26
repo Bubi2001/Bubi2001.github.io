@@ -72,7 +72,7 @@ function setControlsDisabled(disabled) {
 // This prevents the sendData function from being called too frequently
 function debounceSendData() {
     clearTimeout(sendDataTimeout);
-    sendDataTimeout = setTimeout(sendData, 1000); // Wait 1s after user stops typing
+    sendDataTimeout = setTimeout(sendData, 250); // Wait 250ms after user stops typing
 }
 
 // --- Input Validation ---
